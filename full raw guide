@@ -1,0 +1,185 @@
+Here is a comprehensive guide documenting the final version of the PHP domain name generator, covering its functionality, usage, setup, and important considerations.
+
+Full Documentation: PHP Domain Name Generator
+
+1. Introduction
+
+This document provides a complete guide to using and setting up a PHP-based domain name generator. This generator uses the Google Gemini AI API to create domain name suggestions based on a user-provided prompt, learning from a set of pre-defined examples to generate contextually relevant suggestions.
+
+2. Core Functionality
+
+The PHP code performs the following key tasks:
+
+User Prompt Input: Provides an HTML form where users can input a prompt describing the type of domain name they're looking for (e.g., "a website for selling books").
+
+Google Gemini API Interaction:
+
+Sends a request to Google's Gemini AI API generateContent endpoint, including a combined prompt based on pre-defined examples and user’s input, using the provided Google API Key via the x-goog-api-key header..
+
+Retrieves the response, which contains a JSON-formatted array of domain name suggestions.
+
+Output Display: Displays the domain name suggestions on the HTML page.
+
+3. Code Overview (domain.php)
+
+The main logic is contained within a single PHP file (domain.php). Here's a breakdown of its components:
+
+Dependencies: Includes the Composer autoload file to use required packages.
+
+require 'vendor/autoload.php';
+Use code with caution.
+PHP
+generateDomainName() Function:
+
+Fetches the Google Gemini API Key from environment variables using getenv('GEMINI_API_TOKEN').
+
+Defines configuration parameters for the Gemini API request, including temperature, topP, topK, maxOutputTokens, and response mime type.
+
+Sets up safetySettings to handle harmful content appropriately.
+
+Defines a history array that provides the context for Gemini API to learn and output domain names accordingly.
+
+Creates a fullPrompt by combining all the history examples into single string using implode() and then adding user's prompt after that.
+
+Constructs the data payload which contains the combined fullPrompt, generationConfig and safetySettings.
+
+Uses curl to send an HTTP POST request to the Gemini API endpoint https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent, including the API Key in the header.
+
+Processes the API response, decodes the JSON, and extracts the domain name array.
+
+Returns the extracted domain name array on success, or false on failure.
+
+HTML Rendering:
+
+An HTML form for users to input a prompt.
+
+PHP code that processes the form submission ($_SERVER['REQUEST_METHOD'] === 'POST').
+
+Calls the generateDomainName() function when form is submitted.
+
+Displays the generated domain names in a list.
+
+4. Setup Instructions
+
+Follow these steps to host the domain name generator on a cPanel environment:
+
+4.1. Prerequisites
+
+cPanel Hosting: Access to a cPanel hosting account.
+
+Google Gemini API Key: A valid API key from Google AI Studio (https://aistudio.google.com/).
+
+PHP: PHP 7.4 or higher with the curl and json extensions enabled.
+
+4.2. Setting Up Environment Variables
+
+Log In to cPanel: Log in to your cPanel account.
+
+Find Environment Variables: Locate the "Environment Variables" section (often in "Software" or "Advanced").
+
+Add GEMINI_API_TOKEN:
+
+Enter GEMINI_API_TOKEN as the variable name.
+
+Paste your Google Gemini API key as the value.
+
+Save the environment variable.
+
+4.3. Downloading Project Files
+
+Download domain.php: Get a copy of the final domain.php file provided above.
+
+Install Composer: If your cPanel supports terminal access, navigate to the project directory using the cd command and install composer as described below, otherwise, download a vendor folder containing dependencies on your local machine using composer and upload it as described below.
+
+Create composer.json: In the same directory create a composer.json and add the following json content:
+
+{
+     "require": {
+         "google/apiclient": "^2.15",
+         "mongodb/mongodb": "^1.17"  // If you want to store result, you can configure Database
+     }
+}
+Use code with caution.
+Json
+Install dependencies: Run the following command to install the dependencies:
+
+composer install
+Use code with caution.
+Bash
+4.4. Uploading Files to cPanel
+
+Access File Manager: Open cPanel's "File Manager."
+
+Navigate to public_html: Go to your public_html directory (or the equivalent web document root directory).
+
+Upload Files:
+
+Upload the domain.php file into your public_html folder.
+
+Upload the vendor directory, with its contents to the public_html folder.
+
+Ensure all files and folders are uploaded correctly.
+
+4.5. File Permissions
+
+Select Files: In File Manager, select the domain.php and vendor folder.
+
+Set Permissions:
+
+Set permissions for domain.php to 644.
+
+Set permissions for the vendor folder to 755.
+
+Set permissions for the files inside the vendor folder to 644.
+
+4.6. Testing
+
+Open Web Browser: Open your web browser.
+
+Access domain.php: Type your domain name followed by /domain.php (e.g., yourdomain.com/domain.php).
+
+Test the Form:
+
+Enter a prompt into the input field and click "Generate Domain Names."
+
+Verify that the domain name suggestions are generated and displayed correctly.
+
+5. Code
+You can upload domain.php code from this repo
+  
+6. Important Considerations
+
+API Key Security: Always keep your Google Gemini API key secure. Avoid committing it directly to any public repository. Use environment variables or other secure methods to manage sensitive data.
+
+Error Handling: The code provides basic error checking (e.g., checking HTTP status code), but it can be enhanced to handle various API errors more gracefully.
+
+Rate Limiting: The Gemini API may have rate limits. Implement proper handling for rate limit errors.
+
+Gemini Model: The code uses gemini-1.5-flash model. Explore other models available in Google Gemini API if needed.
+
+Performance: The performance may be impacted due to the single long prompt. Test and optimize if required.
+
+No Chat Session: This implementation uses generateContent method, and is not a true "chat" session, so the model will not remember previous turns. For a real chat session, consider storing the previous prompts and responses from startChat to keep the conversation history.
+
+Dependency Management: Make sure you correctly install composer dependencies.
+
+cPanel Variations: cPanel layouts can vary, so adjust instructions as per your specific hosting setup.
+
+7. Troubleshooting
+
+Blank Page or Errors:
+
+Check PHP and curl errors, and ensure both are properly configured.
+
+Ensure API key is set up correctly in cPanel environment variables.
+
+Ensure all files have been uploaded into the correct directories.
+
+Authentication Errors: Double-check the x-goog-api-key format and the API key in the code.
+
+API Response Errors: Check the API documentation for error messages and adjust the handling accordingly.
+
+8. Conclusion
+
+This comprehensive document guides you in setting up a functional PHP domain name generator on your cPanel server using the Google Gemini API. The code generates domain name suggestions by learning from given examples and generating output based on new user prompts, while also handling the key details for API key usage, request handling and output presentation.
+With this documentation, I hope you will be able to use the PHP domain name generator without any further issues. Please let me know if you have any additional questions or require further clarification.
